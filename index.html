@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"> <!-- Esto soluciona el problema de los caracteres raros -->
+    <meta name="description" content="Chat intelectual">
+    <meta name="keywords" content="JavaScript">
+    <meta name="author" content="Suicide Squad">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/main.css">
+    <title>Chat curioso</title>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+</head>
+<body>
+    <!-- Añadimos un formulario para introducir el nombre -->
+    <div class="name-container" id="nameContainer">
+        <input type="text" id="nameInput" placeholder="Introduce tu nombre">
+        <button onclick="saveName()">Guardar nombre</button>
+    </div>
+
+    <!-- Chat -->
+    <div class="chat-container" id="chatContainer" style="display: none;"> <!-- El chat está oculto inicialmente -->
+        <div class="messages" id="messages">
+            <div class="message received">Buenas pequeño mamífero, ¿qué se te ofrece?</div>
+            <div class="message received">¿Quieres cuestionarte algo de la vida?</div>
+            <div class="message received">¿O solo pasabas por aquí?</div>
+        </div>
+        <div class="input-container">
+            <input type="text" id="messageInput" placeholder="Escribe tus dudas y miedos">
+            <button onclick="sendMessage()">Cuéntame qué te aflige</button>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script> <!-- JavaScript externo -->
+</body>
+</html>
