@@ -1,36 +1,104 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8"> <!-- Esto soluciona el problema de los caracteres raros -->
     <meta name="description" content="Chat intelectual">
-    <meta name="keywords" content="JavaScript">
     <meta name="author" content="Suicide Squad">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="Chat, respuestas varias, preguntas extrañas">
+    <link rel="icon" href="#">
+
     <link rel="stylesheet" href="css/main.css">
     <title>Chat curioso</title>
-    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
 </head>
 <body>
-    <!-- Añadimos un formulario para introducir el nombre -->
-    <div class="name-container" id="nameContainer">
-        <input type="text" id="nameInput" placeholder="Introduce tu nombre">
-        <button onclick="saveName()">Guardar nombre</button>
-    </div>
-
-    <!-- Chat -->
-    <div class="chat-container" id="chatContainer" style="display: none;"> <!-- El chat está oculto inicialmente -->
+    <div class="chat-container">
         <div class="messages" id="messages">
-            <div class="message received">Buenas pequeño mamífero, ¿qué se te ofrece?</div>
-            <div class="message received">¿Quieres cuestionarte algo de la vida?</div>
-            <div class="message received">¿O solo pasabas por aquí?</div>
+            <div class="message received">Buenas pequeño mamifero, que se te ofrece??</div>
+            <div class="message received">¿quieres cuestionarte algo de la vida?</div>
+            <div class="message received">o solo pasabas por aquí???¿</div>
         </div>
         <div class="input-container">
             <input type="text" id="messageInput" placeholder="Escribe tus dudas y miedos">
-            <button onclick="sendMessage()">Cuéntame qué te aflige</button>
+            <button onclick="sendMessage()">Cuentame que te aflije</button>
+            <button onclick="toggleEmojiPicker()">😀</button> <!-- Botón para mostrar emojis -->
         </div>
     </div>
 
-    <script src="js/main.js"></script> <!-- JavaScript externo -->
+    <div id="emojiPicker" style="display:none;" class="emoji-picker">
+        <span onclick="addEmoji('😀')">😀</span>
+        <span onclick="addEmoji('😃')">😃</span>
+        <span onclick="addEmoji('😄')">😄</span>
+        <span onclick="addEmoji('😆')">😆</span>
+        <span onclick="addEmoji('😉')">😉</span>
+        <span onclick="addEmoji('😍')">😍</span>
+        <span onclick="addEmoji('😎')">😎</span>
+        <span onclick="addEmoji('😢')">😢</span>
+        <span onclick="addEmoji('😡')">😡</span>
+        <!-- Agrega más emojis según sea necesario -->
+    </div>
+
+    <script>
+
+const firebaseConfig = {
+          apiKey: "AIzaSyD1YQI6qYTFnfj_kOSzgqTedqR2R2dLtVQ",
+          authDomain: "chat-interactivo-ce323.firebaseapp.com",
+          databaseURL: "https://chat-interactivo-ce323-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "chat-interactivo-ce323",
+          storageBucket: "chat-interactivo-ce323.appspot.com",
+          messagingSenderId: "474997098356",
+          appId: "1:474997098356:web:86ed5449562419fa964e21",
+          measurementId: "G-FRE2732VJC"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const messagesRef = db.collection('mensajes');
+
+function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const message = input.value;
+    if (message.trim()) {
+        const messagesContainer = document.getElementById('messages');
+        const newMessage = document.createElement('div');
+        newMessage.classList.add('message', 'sent');
+        newMessage.textContent = message;
+        messagesContainer.appendChild(newMessage);
+        input.value = ''; 
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        // Send message to Firestore
+        messagesRef.add({
+            message: message,
+            sender: 'user', // You can add more fields like timestamp
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    }
+}
+
+messagesRef.orderBy('timestamp', 'asc').onSnapshot((snapshot) => {
+    const messagesContainer = document.getElementById('messages');
+    messagesContainer.innerHTML = ''; // Clear previous messages
+
+    snapshot.forEach((doc) => {
+        const messageData = doc.data();
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', messageData.sender === 'user' ? 'sent' : 'received');
+        messageElement.textContent = messageData.message;
+        messagesContainer.appendChild(messageElement);
+    });
+    messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to bottom
+});
+        function toggleEmojiPicker() {
+            const emojiPicker = document.getElementById('emojiPicker');
+            emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function addEmoji(emoji) {
+            const input = document.getElementById('messageInput');
+            input.value += emoji; // Añadir emoji al campo de input
+            toggleEmojiPicker(); // Cerrar el picker después de seleccionar
+        }
+    </script>
 </body>
 </html>
