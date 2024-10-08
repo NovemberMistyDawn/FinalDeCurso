@@ -13,6 +13,11 @@
     
 </head>
 <body>
+    <div class="name-input">
+        <label for="userName">Ingresa tu nombre:</label>
+        <input type="text" id="userName" placeholder="Tu nombre">
+        <button onclick="saveUserName()">Guardar</button>
+    </div>
     <div class="chat-container">
         <div class="messages" id="messages">
             <div class="message received">Buenas pequeño mamifero, que se te ofrece??</div>
@@ -54,40 +59,87 @@ const firebaseConfig = {
         const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const messagesRef = db.collection('mensajes');
+let userId = null; 
 
-function sendMessage() {
+function saveUserName() {
+    const userNameInput = document.getElementById('userName');
+    const userName = userNameInput.value;
+
+    if (userName.trim()) {
+        // Generate a unique user ID (you can use a timestamp or a random string)
+        const userId = Date.now().toString(); // Example using timestamp
+
+        // Store the name and user ID in Firestore
+        db.collection('users').doc(userId).set({
+            name: userName,
+            userId: userId // Store the user ID for reference
+        })
+        .then(() => {
+            console.log("Usuario guardado correctamente");
+            document.querySelector('.name-input').style.display = 'none';
+        })
+        .catch((error) => {
+            console.error("Error al guardar el usuario: ", error);
+        });
+    } else {
+        alert("Por favor, ingresa un nombre.");
+    }
+}
+
+db.collection('users').doc('user1').get() // Replace 'user1' with the correct identifier
+    .then((doc) => {
+        if (doc.exists) {
+            const userName = doc.data().name;
+            // Display the name somewhere in your chat interface
+            // For example:
+            const welcomeMessage = document.createElement('div');
+            welcomeMessage.classList.add('message', 'received');
+            welcomeMessage.textContent = `¡Hola, ${userName}!`;
+            document.getElementById('messages').appendChild(welcomeMessage);
+        } else {
+            console.log("No se encontró el nombre del usuario.");
+        }
+    })
+    .catch((error) => {
+        console.error("Error al obtener el nombre: ", error);
+    });
+
+    function sendMessage() {
     const input = document.getElementById('messageInput');
     const message = input.value;
+    const userName = document.getElementById('userName').value; // Get the user's name
+
     if (message.trim()) {
         const messagesContainer = document.getElementById('messages');
         const newMessage = document.createElement('div');
         newMessage.classList.add('message', 'sent');
         newMessage.textContent = message;
         messagesContainer.appendChild(newMessage);
-        input.value = ''; 
+        input.value = '';
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-        // Send message to Firestore
+        // Send message to Firestore with the sender's name
         messagesRef.add({
             message: message,
-            sender: 'user', // You can add more fields like timestamp
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            sender: userName, // Store the name as the sender
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            userId: userId // Store the user ID for reference
         });
     }
 }
 
 messagesRef.orderBy('timestamp', 'asc').onSnapshot((snapshot) => {
     const messagesContainer = document.getElementById('messages');
-    messagesContainer.innerHTML = ''; // Clear previous messages
+    messagesContainer.innerHTML = '';
 
     snapshot.forEach((doc) => {
         const messageData = doc.data();
         const messageElement = document.createElement('div');
-        messageElement.classList.add('message', messageData.sender === 'user' ? 'sent' : 'received');
-        messageElement.textContent = messageData.message;
+        messageElement.classList.add('message', messageData.sender === userName ? 'sent' : 'received'); // Use the stored name for comparison
+        messageElement.textContent = `${messageData.sender}: ${messageData.message}`; // Display the sender's name
         messagesContainer.appendChild(messageElement);
     });
-    messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to bottom
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 });
         function toggleEmojiPicker() {
             const emojiPicker = document.getElementById('emojiPicker');
