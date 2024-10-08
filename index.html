@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <div id="emojiPicker" style="display:none;" class="emoji-picker">
+    <div id="emojiPicker"  class="emoji-picker">
         <span onclick="addEmoji('😀')">😀</span>
         <span onclick="addEmoji('😃')">😃</span>
         <span onclick="addEmoji('😄')">😄</span>
@@ -61,6 +61,15 @@ const db = firebase.firestore();
 const messagesRef = db.collection('mensajes');
 let userId = null; 
 
+if (localStorage.getItem('nameEntered') === 'true') {
+    // Hide the name input section
+    document.querySelector('.name-input').style.display = 'block';
+}
+else{
+    document.querySelector('.name-input').classList.add('hidden');
+    // Show the chat container
+    document.querySelector('.chat-container').style.display = 'flex';
+}
 function saveUserName() {
     const userNameInput = document.getElementById('userName');
     const userName = userNameInput.value;
@@ -78,6 +87,11 @@ function saveUserName() {
             console.log("Usuario guardado correctamente");
             // Hide the name input section
             document.querySelector('.name-input').classList.add('hidden');
+            // Store in local storage that the name has been entered
+            localStorage.setItem('nameEntered', 'true');
+            // Show the chat container
+            document.querySelector('.chat-container').style.display = 'flex';
+            document.querySelector('.chat-container').style.opacity = 1; 
         })
         .catch((error) => {
             console.error("Error al guardar el usuario: ", error);
@@ -150,10 +164,21 @@ messagesRef.orderBy('timestamp', 'asc').onSnapshot((snapshot) => {
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 });
 
-        function toggleEmojiPicker() {
-            const emojiPicker = document.getElementById('emojiPicker');
-            emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'block' : 'none';
-        }
+function toggleEmojiPicker() {
+  const emojiPicker = document.getElementById('emojiPicker');
+  if (emojiPicker.style.display === 'none') {
+    emojiPicker.style.display = 'block';
+    // Add the 'visible' class to trigger the animation
+    emojiPicker.classList.add('visible'); 
+  } else {
+    // Remove the 'visible' class to trigger the animation
+    emojiPicker.classList.remove('visible'); 
+    setTimeout(() => {
+      emojiPicker.style.display = 'none';
+    }, 300); // Wait for the animation to finish before hiding
+  }
+}
+
 
         function addEmoji(emoji) {
             const input = document.getElementById('messageInput');
