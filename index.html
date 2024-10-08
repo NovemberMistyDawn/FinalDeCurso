@@ -129,18 +129,26 @@ db.collection('users').doc('user1').get() // Replace 'user1' with the correct id
 }
 
 messagesRef.orderBy('timestamp', 'asc').onSnapshot((snapshot) => {
-    const messagesContainer = document.getElementById('messages');
-    messagesContainer.innerHTML = '';
+  const messagesContainer = document.getElementById('messages');
+  messagesContainer.innerHTML = '';
 
-    snapshot.forEach((doc) => {
-        const messageData = doc.data();
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message', messageData.sender === userName ? 'sent' : 'received'); // Use the stored name for comparison
-        messageElement.textContent = `${messageData.sender}: ${messageData.message}`; // Display the sender's name
-        messagesContainer.appendChild(messageElement);
-    });
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  snapshot.forEach((doc) => {
+    const messageData = doc.data();
+    const messageElement = document.createElement('div');
+
+    // Determine the message class based on the sender
+    if (messageData.userId === userId) {
+      messageElement.classList.add('message', 'sent'); // Your messages are pink
+    } else {
+      messageElement.classList.add('message', 'received'); // Other users' messages are purple
+    }
+
+    messageElement.textContent = `${messageData.sender}: ${messageData.message}`;
+    messagesContainer.appendChild(messageElement);
+  });
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
 });
+
         function toggleEmojiPicker() {
             const emojiPicker = document.getElementById('emojiPicker');
             emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'block' : 'none';
