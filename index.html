@@ -13,7 +13,7 @@
     
 </head>
 <body>
-    <div class="name-input">
+    <div class="name-input" style="display: block;">
         <label for="userName">Ingresa tu nombre:</label>
         <input type="text" id="userName" placeholder="Tu nombre">
         <button onclick="saveUserName()">Guardar</button>
@@ -67,7 +67,7 @@ function saveUserName() {
 
     if (userName.trim()) {
         // Generate a unique user ID (you can use a timestamp or a random string)
-        const userId = Date.now().toString(); // Example using timestamp
+        userId = Date.now().toString(); // Example using timestamp
 
         // Store the name and user ID in Firestore
         db.collection('users').doc(userId).set({
@@ -76,7 +76,8 @@ function saveUserName() {
         })
         .then(() => {
             console.log("Usuario guardado correctamente");
-            document.querySelector('.name-input').style.display = 'none';
+            // Hide the name input section
+            document.querySelector('.name-input').classList.add('hidden');
         })
         .catch((error) => {
             console.error("Error al guardar el usuario: ", error);
