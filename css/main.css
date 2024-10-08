@@ -26,16 +26,18 @@ body {
 .message {
     margin: 5px 0;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 30px;
     max-width: 70%;
 }
 .message.sent {
-    background-color: #c242a2;
+    background-color: #ffb6c1; /* Pink */
     align-self: flex-end;
+    border-bottom-right-radius: 0; 
 }
 .message.received {
-    background-color: #6977c2;
+    background-color: #c8a2c8; /* Purple */
     align-self: flex-start;
+    border-bottom-left-radius: 0;
 }
 .input-container {
     display: flex;
@@ -78,7 +80,7 @@ body {
 .message {
     margin: 5px 0;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     max-width: 80%;
 }
 
