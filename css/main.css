@@ -1,5 +1,12 @@
+@font-face {
+    font-family: "MadeInfinity";
+    src: url("../font/made_infinity/MADEINFINITYPersonalUse-Regular.otf");
+  }
+
+
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: "MadeInfinity";
     margin: 0;
     padding: 0;
     height: 100vh;
@@ -29,7 +36,21 @@ body {
     transform: translateY(-20px); /* Move slightly upwards */
   }
 
+  .name-input input::placeholder { /* Style the placeholder */
+    font-family: "MadeInfinity";
+  }
+  
+  .name-input button { /* Style the button */
+    font-family: "MadeInfinity";
+  }
 
+  #messageInput::placeholder {
+    font-family: "MadeInfinity";
+  }
+  
+  button {
+    font-family: "MadeInfinity";
+  }
 
 
 
@@ -46,14 +67,18 @@ body {
     max-width: 70%;
 }
 .message.sent {
+    color:white;
     background-color: #ffb6c1; /* Pink */
     align-self: flex-end;
     border-bottom-right-radius: 0; 
+    background: linear-gradient(to right, #d80e6c, #a54aa5);
 }
 .message.received {
+    color:white;
     background-color: #c8a2c8; /* Purple */
     align-self: flex-start;
     border-bottom-left-radius: 0;
+    background: linear-gradient(to right, #3090ad, #0f26ac); 
 }
 .input-container {
     display: flex;
@@ -81,7 +106,7 @@ body {
     justify-content: center;
     align-items: center;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: "MadeInfinity";
 }
 
 
